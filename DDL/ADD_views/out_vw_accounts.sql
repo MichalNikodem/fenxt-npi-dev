@@ -3,7 +3,7 @@ SELECT
 	AccountCategory::VARCHAR(512) as "a__accountcategory",
 	AccountCategoryTranslation::VARCHAR(512) as "a__accountcategorytranslation",
 	AccountCodeDescription::VARCHAR(512) as "a__accountcodedescription",
-	a.AccountId::VARCHAR(512) as "a__accountdescription",
+	AccountDescription::VARCHAR(512) as "a__accountdescription",
 	AccountNumber::VARCHAR(512) as "a__accountnumber",
 	(concat(concat(asv1.AccountSegmentValue, ' - '), asv1.Description))::VARCHAR(512) as "a__accountsegment1",
 	(concat(concat(asv10.AccountSegmentValue, ' - '), asv10.Description))::VARCHAR(512) as "a__accountsegment10",
