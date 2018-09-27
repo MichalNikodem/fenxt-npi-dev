@@ -6,8 +6,7 @@ ${TRANSFORM_ID['TRANSFORM_ID']} as _sys_transform_id,
 abd.TenantId as "TenantId",
 	 GoodData_Attr(abd.AccountBudgetDetailId) as "AccountBudgetAttrId"
 	,GoodData_Attr(te.Description) as "IncorrectScenarioId"
-	--,GoodData_Attr(te.Description) as "ScenarioId"
-	,isnull(to_char(BS.ScenarioId), '<No budget>') as "ScenarioId"
+	,GoodData_Attr(BS.ScenarioId) as "ScenarioId"
 	,GoodData_Attr(ab.AccountBudgetId) as "AccountBudgetId"
 from stg_csv_accountbudgetdetail_merge abd
 join stg_csv_accountbudget_merge ab

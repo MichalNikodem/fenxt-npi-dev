@@ -3,13 +3,12 @@ insert /*+ direct */ into out_AccountBudgets_fact
 select   
 ${TRANSFORM_ID['TRANSFORM_ID']} as _sys_transform_id,
 abd.TenantId as "TenantId",
-	 cast(abd.Amount as int) as "AccountBudgetAmount"
+	 cast(abd.Amount as decimal(15,2)) as "AccountBudgetAmount"
 	,GoodData_Attr(ab.AccountId)  as "AccountId"
 	,GoodData_Attr(abd.FiscalPeriodId) as "FiscalPeriodId"
 	,GoodData_Attr(abd.AccountBudgetDetailId) as "AccountBudgetFactId"
 	,GoodData_Attr(abd.AccountBudgetDetailId) as "AccountBudgetAttrId"
-	--,GoodData_Attr(te.Description) as "ScenarioId"
-	,isnull(to_char(BS.ScenarioId), '<No budget>') as "ScenarioId"
+	,GoodData_Attr(BS.ScenarioId) as "ScenarioId"
 from stg_csv_accountbudgetdetail_merge abd
 join stg_csv_accountbudget_merge ab
 	on abd.AccountBudgetId = ab.AccountBudgetId and abd.TenantId = ab.TenantId

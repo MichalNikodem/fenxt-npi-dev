@@ -1,13 +1,9 @@
-
 truncate table wrk_tmp_transaction_scenario;
 insert /*+ direct*/ into wrk_tmp_transaction_scenario
 select   ab.AccountId,
-        -- isnull(TE.Description, '<No budget>') as ScenrioId,
-        isnull(GoodData_Attr(to_char(BS.ScenarioId)), '<No budget>') as ScenrioId,
+        to_char(BS.ScenarioId) as ScenarioId,
         abd.FiscalPeriodId,
-        ab.tenantid,
-        false as _sys_is_deleted,
-        null as _sys_updated_at
+        ab.tenantid
     from stg_csv_ACCOUNTBUDGET_merge ab
     join stg_csv_AccountBudgetDetail_merge abd on Ab.ACCOUNTBUDGETId = abd.ACCOUNTBUDGETId and ab.tenantid=abd.tenantid and ab._sys_is_deleted=false and abd._sys_is_deleted=false
     join stg_csv_BUDGETSCENARIO_merge BS on ab.BUDGETSCENARIOID = BS.BUDGETSCENARIOID and ab.tenantid = bs.tenantid and bs._sys_is_deleted=false
@@ -18,8 +14,8 @@ select analyze_statistics('wrk_tmp_transaction_scenario');
 
 truncate table wrk_tmp_transaction_scenario_diff;
 
-insert /*+ direct*/ into wrk_tmp_transaction_scenario_diff
-select  distinct a.*
+insert /*+ direct*/ into wrk_tmp_transaction_scenario_diff (AccountId,ScenarioId,FiscalPeriodId,tenantid)
+select distinct a.AccountId,a.ScenarioId,a.FiscalPeriodId,a.tenantid
 FROM "wrk_tmp_transaction_scenario" a
 LEFT JOIN (
     SELECT aa."tenantid",aa."AccountId",aa."FiscalPeriodId",aa."ScenarioId"
@@ -44,7 +40,7 @@ WHEN MATCHED THEN UPDATE SET
     ScenarioId = temp.ScenarioId,
     FiscalPeriodId = temp.FiscalPeriodId,
     tenantid = temp.tenantid,
-    _sys_is_deleted = temp._sys_is_deleted,
+    _sys_is_deleted = false,
     _sys_updated_at = now()
 WHEN NOT MATCHED THEN INSERT
     (
@@ -60,7 +56,7 @@ WHEN NOT MATCHED THEN INSERT
         temp.ScenarioId,
         temp.FiscalPeriodId,
         temp.tenantid,
-        temp._sys_is_deleted,
+        false,
         now()
     );
 

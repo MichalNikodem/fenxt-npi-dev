@@ -3,8 +3,7 @@ insert /*+ direct */ into wk_FiscalPeriod_Scenario_Join
 select pb.TenantId, 
 pb.projectid, 
 ab.AccountId, 
---te.Description as "ScenarioId",
- isnull(to_char(BS.ScenarioId), '<No budget>') as "ScenarioId",
+to_char(BS.ScenarioId) as "ScenarioId",
 abd.FiscalPeriodId
 	from stg_csv_AccountBudget_merge ab
 	join stg_csv_AccountBudgetDetail_merge abd
