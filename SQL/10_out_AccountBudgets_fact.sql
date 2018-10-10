@@ -8,7 +8,7 @@ abd.TenantId as "TenantId",
 	,GoodData_Attr(abd.FiscalPeriodId) as "FiscalPeriodId"
 	,GoodData_Attr(abd.AccountBudgetDetailId) as "AccountBudgetFactId"
 	,GoodData_Attr(abd.AccountBudgetDetailId) as "AccountBudgetAttrId"
-	,GoodData_Attr(te.Description) as "ScenarioId"
+	,GoodData_Attr(BS.ScenarioId) as "ScenarioId"
 from stg_csv_accountbudgetdetail_merge abd
 join stg_csv_accountbudget_merge ab
 	on abd.AccountBudgetId = ab.AccountBudgetId and abd.TenantId = ab.TenantId

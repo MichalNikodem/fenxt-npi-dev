@@ -27,7 +27,7 @@ select
 	GoodData_Attr(null)  as "AccountId",
 	cast(0 as decimal(15,2)) as "ProjectBudgetAmount",
 	GoodData_Attr(FP.Id)  as "FiscalPeriodId",
-	GoodData_Attr('<No Budget>') as "ScenarioId"
+	GoodData_Attr('<No budget>') as "ScenarioId"
 from stg_csv_project_merge p
 join (select min(FiscalPeriodId) as "Id", TenantId from stg_csv_FiscalPeriod_merge group by TenantId) FP
 on p.TenantId=fp.TenantId
