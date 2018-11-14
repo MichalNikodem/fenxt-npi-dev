@@ -1,7 +1,7 @@
 truncate table wrk_tmp_transaction_scenario;
 insert /*+ direct*/ into wrk_tmp_transaction_scenario
 select   ab.AccountId,
-        isnull(TE.Description, '<No budget>') as ScenrioId,
+        to_char(BS.ScenarioId) as ScenarioId,
         abd.FiscalPeriodId,
         ab.tenantid
     from stg_csv_ACCOUNTBUDGET_merge ab
