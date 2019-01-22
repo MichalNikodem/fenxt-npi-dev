@@ -1,17 +1,20 @@
-drop TABLE if exists out_ClientTranslation;
-CREATE TABLE out_ClientTranslation
+drop table if exists out_ClientTranslation;
+drop table if exists wrk_out_ClientTranslation;
+drop table if exists wrk_out_ClientTranslation_diff;
+
+CREATE TABLE cd8c99dd0dc75c6e82a0eb55842060bf.out_ClientTranslation
 (
-    _sys_transform_id int NOT NULL encoding rle,
-    TenantId varchar(255) encoding rle,
-    TransactionCode1Name varchar(255),
-    TransactionCode2Name varchar(255),
-    TransactionCode3Name varchar(255),
-    TransactionCode4Name varchar(255),
-    TransactionCode5Name varchar(255),
-    ProjectName varchar(255),
-    FundName varchar(255),
-    GrantName varchar(255)
-)  ORDER BY TenantId,
-          _sys_transform_id
-SEGMENTED BY hash(TenantId) ALL NODES
-PARTITION BY (_sys_transform_id);
+    TenantId varchar(255),
+    maql varchar(1000),
+    _sys_hash varchar(32),
+    _sys_is_deleted boolean encoding rle,
+    _sys_updated_at timestamp
+)
+ ORDER BY TenantId,
+          _sys_hash,
+          _sys_is_deleted
+
+SEGMENTED BY hash(out_ClientTranslation.TenantId) ALL NODES KSAFE 1;
+
+CREATE TABLE wrk_out_ClientTranslation LIKE out_ClientTranslation INCLUDING PROJECTIONS;
+CREATE TABLE wrk_out_ClientTranslation_diff LIKE out_ClientTranslation INCLUDING PROJECTIONS;

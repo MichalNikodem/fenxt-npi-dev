@@ -1,0 +1,100 @@
+{% assign is_deleted_field = {{is_deleted_field}} | default: "_sys_is_deleted" %}
+{% assign hash_field = {{hash_field}} | default: "_sys_hash" %}
+{% assign updated_at_field = {{updated_at_field}} | default: "_sys_updated_at" %}
+
+{% comment %}
+Default mode assumes INC transformation done into WRK table.
+Available values: ["full","inc"]
+{% endcomment %}
+
+{% assign source_mode = {{source_mode}} | default: "inc" %}
+
+SELECT analyze_statistics('wrk_{{tgt_table_name}}');
+
+/* source mode: {{source_mode}}*/
+
+{% if source_mode == 'full' %}
+update /*+direct*/ {{tgt_table_name}} t
+set {{is_deleted_field}} = true, {{updated_at_field}} = now()
+WHERE {{is_deleted_field}} = false
+  AND not exists
+(SELECT 1
+  from wrk_{{tgt_table_name}} s
+  WHERE {% for field in keys %} s.{{ field }} = t.{{ field }} {% unless forloop.last %} 
+    AND {% endunless %}{% endfor %}
+  );
+{% endif %}
+
+TRUNCATE TABLE wrk_{{tgt_table_name}}_diff;
+INSERT /*+direct*/ INTO wrk_{{tgt_table_name}}_diff
+(
+{% for field in fields %} {{ field }} {% unless forloop.last %},
+{% endunless %}{% endfor %}, 
+ {{hash_field}}, 
+ {{is_deleted_field}}, 
+ {{updated_at_field}}
+)
+SELECT {% for field in fields %} s.{{ field }} {% unless forloop.last %},
+       {% endunless %}{% endfor %},
+        s.{{hash_field}}, 
+        s.{{is_deleted_field}}, 
+        s.{{updated_at_field}}
+FROM wrk_{{tgt_table_name}} s
+{% if source_mode == 'full' %}
+    WHERE not exists (SELECT 1 
+                        from {{tgt_table_name}} t 
+                       WHERE {% for field in keys %} s.{{ field }} = t.{{ field }} {% unless forloop.last %} 
+                         AND {% endunless %}{% endfor %}
+                         AND t.{{hash_field}}=s.{{hash_field}}
+                         AND t.{{is_deleted_field}}=false
+                     )
+; 
+{% else %}
+LEFT JOIN (
+    SELECT {% for field in keys %} {{ field }} {% unless forloop.last %},
+           {% endunless %}{% endfor %}, 
+            {{hash_field}}, 
+            {{is_deleted_field}}, 
+            {{updated_at_field}}
+    FROM {{tgt_table_name}} t
+    WHERE exists (SELECT 1 
+                    from wrk_{{tgt_table_name}} s 
+                   WHERE{% for field in keys %} s.{{ field }} = t.{{ field }}{% unless forloop.last %}
+                     AND{% endunless %}{% endfor %}
+                     AND s.{{hash_field}} = t.{{hash_field}}) 
+      AND t.{{is_deleted_field}} = false
+          ) b ON {% for field in keys %} s.{{ field }} = b.{{ field }} {% unless forloop.last %} 
+             AND {% endunless %}{% endfor %}
+WHERE b.{{hash_field}} IS NULL;
+{% endif %}
+SELECT analyze_statistics('wrk_{{tgt_table_name}}_diff');
+
+MERGE /* +direct */ INTO {{tgt_table_name}} o
+USING wrk_{{tgt_table_name}}_diff temp
+ON ( 
+        {% for field in keys %} o.{{ field }} = temp.{{ field }} {% unless forloop.last %} 
+    AND {% endunless %}{% endfor %}
+   )
+WHEN MATCHED THEN UPDATE SET 
+    {% for field in fields %}
+    {{ field }} = temp.{{ field }} {% unless forloop.last %}, {% endunless %}{% endfor %},
+    {{is_deleted_field}} = temp.{{is_deleted_field}},
+    {{hash_field}} = temp.{{hash_field}},
+    {{updated_at_field}} = now()
+WHEN NOT MATCHED THEN INSERT
+    (
+       {% for field in fields %}
+        {{ field }} {% unless forloop.last %},{% endunless %}{% endfor %},
+        {{is_deleted_field}}, 
+        {{hash_field}},
+        {{updated_at_field}}
+    )
+    VALUES (
+       {% for field in fields %}
+        temp.{{ field }} {% unless forloop.last %},{% endunless %}{% endfor %},
+        temp.{{is_deleted_field}}, 
+        temp.{{hash_field}},
+        now()
+           );
+    
+SELECT analyze_statistics('{{tgt_table_name}}');
