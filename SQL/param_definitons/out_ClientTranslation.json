@@ -1,0 +1,9 @@
+{
+"tgt_table_name": "out_ClientTranslation",
+"keys":["tenantid","maql"],
+"source_mode":"full",
+"fields":[ 
+"tenantid",
+"maql"
+]
+}    
