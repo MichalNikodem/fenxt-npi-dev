@@ -1,4 +1,4 @@
-CREATE OR REPLACE VIEW rename_data_maql_2
+CREATE OR REPLACE VIEW rename_data_maql
 
 as
 
