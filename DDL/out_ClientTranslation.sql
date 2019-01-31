@@ -2,7 +2,7 @@ drop table if exists out_ClientTranslation;
 drop table if exists wrk_out_ClientTranslation;
 drop table if exists wrk_out_ClientTranslation_diff;
 
-CREATE TABLE cd8c99dd0dc75c6e82a0eb55842060bf.out_ClientTranslation
+CREATE TABLE out_ClientTranslation
 (
     TenantId varchar(255),
     maql varchar(1000),
