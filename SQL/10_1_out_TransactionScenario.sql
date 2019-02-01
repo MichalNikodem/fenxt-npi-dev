@@ -13,7 +13,7 @@ insert /*+ direct */ into wrk_out_TransactionScenario
 select 
   t.TenantId as "TenantId"
 	,t.TranDistributionId as "TransactionDistributionId"
-	,isnull(abs.ScenarioId, '<No budget>') as "ScenarioId"
+	,isnull(abs.ScenarioId, '-1') as "ScenarioId"
 	,t.FiscalPeriodId as "FiscalPeriodId"
 	,t.AccountId as "AccountId"
 	,t._sys_is_deleted
@@ -34,7 +34,7 @@ insert /*+ direct */ into wrk_out_TransactionScenario
 select
 	t.TenantId as "TenantId"
 	,1000000000000 + t.SummaryId as "TransactionDistributionId"
-	,isnull(abs.ScenarioId, '<No budget>') as "ScenarioId"
+	,isnull(abs.ScenarioId, '-1') as "ScenarioId"
 	,t.FiscalPeriodId as "FiscalPeriodId"
 	,t.AccountId as "AccountId"
 	,t._sys_is_deleted

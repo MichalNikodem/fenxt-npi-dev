@@ -1,0 +1,30 @@
+{
+"tgt_table_name": "out_transactions",
+"keys":["TenantId","TranDistributionId"],
+"source_mode":"inc",
+"fields":[ 
+		"TenantId",
+		"TransactionTypeTranslation",
+		"EncumbranceStatusTranslation",
+		"AddedById",
+		"DateAdded",
+		"LastChangedById",
+		"DateChanged",
+		"BatchId",
+		"PostStatusTranslation",
+		"AccountId",
+		"PostDate",
+		"FiscalPeriodId",
+		"GrantId",
+		"TranDistributionId",
+		"TransactionId",
+		"Projectid",
+		"ClassId",
+		"TDAmount",
+		"TransactionCode1Id",
+		"TransactionCode2Id",
+		"TransactionCode3Id",
+		"TransactionCode4Id",
+		"TransactionCode5Id"
+       ]
+}

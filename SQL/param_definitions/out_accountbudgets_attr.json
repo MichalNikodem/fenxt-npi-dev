@@ -1,0 +1,12 @@
+{
+"tgt_table_name": "out_accountbudgets_attr",
+"keys":["TenantId","AccountBudgetAttrId"],
+"source_mode":"full",
+"fields":[ 
+		"TenantId",
+		"AccountBudgetAttrId",
+		"IncorrectScenarioId",
+		"ScenarioId",
+		"AccountBudgetId"
+       ]
+}

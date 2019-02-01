@@ -1,0 +1,14 @@
+{
+"tgt_table_name": "out_AccountBudgets_fact",
+"keys":["TenantId","AccountBudgetFactId"],
+"source_mode":"full",
+"fields":[ 
+		"TenantId",
+		"AccountBudgetAmount",
+		"AccountId",
+		"FiscalPeriodId",
+		"AccountBudgetFactId",
+		"AccountBudgetAttrId",
+		"ScenarioId"
+       ]
+}

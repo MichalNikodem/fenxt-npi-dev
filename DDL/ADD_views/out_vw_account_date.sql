@@ -5,7 +5,6 @@ SELECT
 	DateChanged::DATE as "d__datechanged",
 	Dummy::NUMERIC(15,2) as "f__dummy",
 	AccountId::VARCHAR(512) as "r__accounts",
-	TenantId::VARCHAR(128) as x__client_id
-FROM out_Accounts
-where _sys_transform_id = (select max(id) from _sys_transform_id where ts_end is not null and entity = 'dm_Accounts')
-;
+	TenantId::VARCHAR(128) as x__client_id,
+	_sys_updated_at::TIMESTAMP  as "x__timestamp"
+FROM out_Accounts;
