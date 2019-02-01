@@ -1,0 +1,32 @@
+{
+"tgt_table_name": "out_transactions_attr",
+"keys":["TenantId","TransactionAttrDistributionId"],
+"source_mode":"inc",
+"fields":[ 
+		"TenantId",
+		"PostStatusTranslation",
+		"PostDate",
+		"TransactionTypeTranslation",
+		"EncumbranceStatusTranslation",
+		"TransactionCode1",
+		"TransactionCode1IsActive",
+		"TransactionCode2",
+		"TransactionCode2IsActive",
+		"TransactionCode3",
+		"TransactionCode3IsActive",
+		"TransactionCode4",
+		"TransactionCode4IsActive",
+		"TransactionCode5",
+		"TransactionCode5IsActive",
+		"DateAdded",
+		"DateChanged",
+		"TransactionAttrDistributionId",
+		"TransactionId",
+		"AddedByUserNameId",
+		"AddedByUserName",
+		"LastChangedByUserName",
+		"Class",
+		"TransactionAttributeId",
+		"IsBeginningBalance"
+       ]
+}

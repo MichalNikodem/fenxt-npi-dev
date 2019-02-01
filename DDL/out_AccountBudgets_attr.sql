@@ -1,13 +1,24 @@
-drop table if exists out_AccountBudgets_attr;
-CREATE TABLE out_AccountBudgets_attr
+drop table if exists out_AccountBudgets_attr CASCADE;
+drop table if exists wrk_out_AccountBudgets_attr CASCADE;
+drop table if exists wrk_out_AccountBudgets_attr_diff CASCADE;
+
+CREATE TABLE out_AccountBudgets_attr 
+
 (
-    _sys_transform_id int NOT NULL encoding rle,
-    TenantId varchar(255) encoding rle,
-    AccountBudgetAttrId varchar(255),
-    IncorrectScenarioId varchar(255),
-    ScenarioId varchar(255),
-    AccountBudgetId varchar(255)
+    TenantId varchar(512) encoding rle,
+    AccountBudgetAttrId varchar(512),
+    IncorrectScenarioId varchar(512),
+    ScenarioId varchar(512),
+    AccountBudgetId varchar(512),
+    _sys_is_deleted boolean,
+    _sys_hash varchar(32),
+    _sys_updated_at timestamp
 )  ORDER BY TenantId,
-          _sys_transform_id
-SEGMENTED BY hash(TenantId) ALL NODES
-PARTITION BY (_sys_transform_id);
+			AccountBudgetAttrId,
+			_sys_hash,
+			_sys_is_deleted
+
+SEGMENTED BY hash(out_AccountBudgets_attr.TenantId,out_AccountBudgets_attr.AccountBudgetAttrId) ALL NODES ;
+
+CREATE TABLE wrk_out_AccountBudgets_attr LIKE out_AccountBudgets_attr INCLUDING PROJECTIONS;
+CREATE TABLE wrk_out_AccountBudgets_attr_diff LIKE out_AccountBudgets_attr INCLUDING PROJECTIONS;

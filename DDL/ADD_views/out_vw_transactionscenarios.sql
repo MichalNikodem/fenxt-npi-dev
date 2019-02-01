@@ -1,6 +1,6 @@
 CREATE OR REPLACE VIEW out_vw_transactionscenarios AS
 SELECT
-	(CASE WHEN ((((out_TransactionScenario.TransactionDistributionId)::varchar || '#'::varchar(1)) || coalesce(out_TransactionScenario.ScenarioId, '<No budget>'::varchar(11))) IS NULL) THEN ''::varchar ELSE (((out_TransactionScenario.TransactionDistributionId)::varchar || '#'::varchar(1)) || coalesce(out_TransactionScenario.ScenarioId, '<No budget>'::varchar(11))) END)::VARCHAR(512) as "cp__transactionscenarioid",
+	(CASE WHEN ((((out_TransactionScenario.TransactionDistributionId)::varchar || '#'::varchar(1)) || coalesce(out_TransactionScenario.ScenarioId, '-1'::varchar(11))) IS NULL) THEN ''::varchar ELSE (((out_TransactionScenario.TransactionDistributionId)::varchar || '#'::varchar(1)) || coalesce(out_TransactionScenario.ScenarioId, '-1'::varchar(11))) END)::VARCHAR(512) as "cp__transactionscenarioid",
 	(CASE WHEN (out_TransactionScenario.AccountId IS NULL) THEN ''::varchar ELSE (out_TransactionScenario.AccountId)::varchar END)::VARCHAR(512) as "r__accounts",
 	(CASE WHEN (out_TransactionScenario.ScenarioId IS NULL) THEN ''::varchar ELSE out_TransactionScenario.ScenarioId END)::VARCHAR(512) as "r__budgetscenario",
 	(CASE WHEN (out_TransactionScenario.FiscalPeriodId IS NULL) THEN ''::varchar ELSE (out_TransactionScenario.FiscalPeriodId)::varchar END)::VARCHAR(512) as "r__fiscalperiods",

@@ -1,29 +1,49 @@
 drop table if exists out_Accounts;
+drop table if exists wrk_out_Accounts;
+drop table if exists wrk_out_Accounts_diff;
+
 CREATE TABLE out_Accounts
 (
-    _sys_transform_id int NOT NULL encoding rle,
-    TenantId varchar(255) encoding rle,
-    AccountId varchar(255),
-    AccountNumber varchar(255),
-    AccountDescription varchar(255),
-    AccountCategory varchar(255),
-    AccountCategoryTranslation varchar(255),
-    FundDescription varchar(255),
-    Class varchar(255),
-    StatusTranslation varchar(255),
-    AccountCodeDescription varchar(255),
-    DateAdded varchar(255),
-    DateChanged varchar(255),
-    AddedByUserId varchar(255),
-    AddedByUserName varchar(255),
-    AddedByUserNameLabel varchar(255),
-    ChangedByUserId varchar(255),
-    ChangedByUserName varchar(255),
-    ChangedByUserNameLabel varchar(255),
-    AccountDateId varchar(255),
-	IsContra varchar(255),
-    Dummy varchar(255)
+    TenantId varchar(512) encoding rle,
+    AccountId varchar(512),
+    AccountNumber varchar(512),
+    AccountDescription varchar(512),
+    AccountCategory varchar(512),
+    AccountCategoryTranslation varchar(512),
+    FundDescription varchar(512),
+    Class varchar(512),
+    StatusTranslation varchar(512),
+    AccountCodeDescription varchar(512),
+    DateAdded varchar(512),
+    DateChanged varchar(512),
+    AddedByUserId varchar(512),
+    AddedByUserName varchar(512),
+    AddedByUserNameLabel varchar(512),
+    ChangedByUserId varchar(512),
+    ChangedByUserName varchar(512),
+    ChangedByUserNameLabel varchar(512),
+    AccountDateId varchar(512),
+    IsContra varchar(512),
+    Dummy varchar(512),
+    accountsegment1 varchar(512),
+    accountsegment2 varchar(512),
+    accountsegment3 varchar(512),
+    accountsegment4 varchar(512),
+    accountsegment5 varchar(512),
+    accountsegment6 varchar(512),
+    accountsegment7 varchar(512),
+    accountsegment8 varchar(512),
+    accountsegment9 varchar(512),
+    accountsegment10 varchar(512),
+    _sys_hash varchar(32),
+    _sys_is_deleted boolean,
+    _sys_updated_at timestamp
 )  ORDER BY TenantId,
-          _sys_transform_id
-SEGMENTED BY hash(TenantId) ALL NODES
-PARTITION BY (_sys_transform_id);
+            AccountId,
+            _sys_hash,
+            _sys_is_deleted
+
+SEGMENTED BY hash(out_Accounts.TenantId,out_Accounts.AccountId) ALL NODES KSAFE 1;
+
+CREATE TABLE wrk_out_Accounts LIKE out_Accounts INCLUDING PROJECTIONS;
+CREATE TABLE wrk_out_Accounts_diff LIKE out_Accounts INCLUDING PROJECTIONS;

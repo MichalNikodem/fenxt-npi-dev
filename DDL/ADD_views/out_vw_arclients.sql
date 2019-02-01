@@ -12,5 +12,5 @@ SELECT
 FROM out_arclients ar
 join stg_csv_user_merge au
 	on ar.AddedByUserId = au.UserId and ar.TenantId = au.TenantId
-where _sys_transform_id = (select max(id) from _sys_transform_id where ts_end is not null and entity = 'dm_ARClients')
+
 ;
