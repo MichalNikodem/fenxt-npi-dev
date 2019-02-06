@@ -1,36 +1,49 @@
-INSERT INTO _sys_transform_id (id,entity,ts_start,ts_end) VALUES (${TRANSFORM_ID['TRANSFORM_ID']},'dm_InvoiceDistribution',now(),null);
-insert /*+ direct */ into out_InvoiceDistribution
-	select 
-	${TRANSFORM_ID['TRANSFORM_ID']} as _sys_transform_id,
-	D.TenantId as "TenantId",
-	 GoodData_attr(TD.TransactionDistributionId) as "InvoiceDistributionId"
-	,GoodData_attr(D.ParentId) as "InvoiceId"
-	,GoodData_attr(D.AccountsId) as "AccountId"
-	,GoodData_attr(nvl(TD.ProjectId, -2)) as "ProjectId"
-from stg_csv_BBDistribution_merge D
-join stg_csv_BBTransactionDistribution_merge TD
-	on D.DistributionId = TD.DistributionId and D.TenantId = TD.TenantId
-where D.ParentObjectType = 268
-	and D.SystemMask = 4
+truncate table wrk_out_InvoiceDistribution;
+insert /*+ direct */ into wrk_out_InvoiceDistribution 
+									(TenantId,
+									 InvoiceDistributionId,
+									 InvoiceId,
+									 AccountId,
+									 ProjectId,
+									 _sys_hash,
+									 _sys_is_deleted
+									)
 
-/* -- this part is redundant, the data is already included in the 1st statement
-union all
-select
-	${TRANSFORM_ID['TRANSFORM_ID']} as _sys_transform_id,
-	D.TenantId as "TenantId",
-	 GoodData_attr(TD.TransactionDistributionId||'#'||0) as "InvoiceDistributionId"
-	,GoodData_attr(D.ParentId) as "InvoiceId"
-	,GoodData_attr(D.AccountsId) as "AccountId"
-	,GoodData_attr(nvl(TD.ProjectId, -1)) as "ProjectId"
-from stg_csv_BBDistribution_merge D
-join stg_csv_BBTransactionDistribution_merge TD
-	on D.DistributionId = TD.DistributionId and D.TenantId = TD.TenantId
-where D.ParentObjectType = 268
-	and D.SystemMask = 4
-	and TD.ProjectId is NULL
-	*/
+SELECT 
+TenantId,
+InvoiceDistributionId,
+InvoiceId,
+AccountId,
+ProjectId,
+_sys_hash,
+_sys_is_deleted
+FROM 	(
+		SELECT 
+		InvoiceDistribution.TenantId,
+		InvoiceDistribution.InvoiceDistributionId,
+		InvoiceDistribution.InvoiceId,
+		InvoiceDistribution.AccountId,
+		InvoiceDistribution.ProjectId,
+		MD5 (
+		COALESCE(( InvoiceId )::VARCHAR(1000),'') || '|' ||
+		COALESCE(( AccountId )::VARCHAR(1000),'') || '|' ||
+		COALESCE(( ProjectId )::VARCHAR(1000),'') 
+			) as _sys_hash,
+		FALSE as _sys_is_deleted 
+		FROM 	(
+				SELECT
+				D.TenantId::VARCHAR(512) as "TenantId",
+				TD.TransactionDistributionId::VARCHAR(512) as "InvoiceDistributionId",
+				D.ParentId::VARCHAR(512) as "InvoiceId",
+				D.AccountsId::VARCHAR(512) as "AccountId",
+				nvl(TD.ProjectId, -2)::VARCHAR(512) as "ProjectId"
+				FROM stg_csv_BBDistribution_merge D
+				JOIN stg_csv_BBTransactionDistribution_merge TD on D.DistributionId = TD.DistributionId 
+																AND D.TenantId = TD.TenantId
+				WHERE D.ParentObjectType = 268 
+				  AND D.SystemMask = 4
+				) as InvoiceDistribution
+		) as SourceTable
 ;
 
-INSERT INTO _sys_transform_id (id,entity,ts_start,ts_end) VALUES (${TRANSFORM_ID['TRANSFORM_ID']},'dm_InvoiceDistribution',null,now());
-select analyze_statistics('out_InvoiceDistribution')
-;
+#{consolidate(param_definition_file="out_invoicedistribution.json")}

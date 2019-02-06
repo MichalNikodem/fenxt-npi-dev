@@ -1,0 +1,12 @@
+{
+"tgt_table_name": "out_invoicedistribution",
+"keys":["TenantId", "InvoiceDistributionId"],
+"source_mode":"full",
+"fields":[ 
+    "TenantId",
+    "InvoiceDistributionId",
+    "InvoiceId",
+    "AccountId",
+    "ProjectId"
+]
+}

@@ -1,36 +1,79 @@
-INSERT INTO _sys_transform_id (id,entity,ts_start,ts_end) VALUES (${TRANSFORM_ID['TRANSFORM_ID']},'dm_AccountBudgets_fact',now(),null);
-insert /*+ direct */ into out_AccountBudgets_fact
-select   
-${TRANSFORM_ID['TRANSFORM_ID']} as _sys_transform_id,
-abd.TenantId as "TenantId",
-	 cast(abd.Amount as decimal(15,2)) as "AccountBudgetAmount"
-	,GoodData_Attr(ab.AccountId)  as "AccountId"
-	,GoodData_Attr(abd.FiscalPeriodId) as "FiscalPeriodId"
-	,GoodData_Attr(abd.AccountBudgetDetailId) as "AccountBudgetFactId"
-	,GoodData_Attr(abd.AccountBudgetDetailId) as "AccountBudgetAttrId"
-	,GoodData_Attr(BS.ScenarioId) as "ScenarioId"
-from stg_csv_accountbudgetdetail_merge abd
-join stg_csv_accountbudget_merge ab
-	on abd.AccountBudgetId = ab.AccountBudgetId and abd.TenantId = ab.TenantId
-join stg_csv_budgetscenario_merge bs
-	on bs.BudgetScenarioId = ab.BudgetScenarioId and bs.TenantId = abd.TenantId
-join stg_csv_tableentry_merge te
-	on bs.ScenarioId = te.TableEntryId and te.CodeTableId = 124 and te.TenantId = abd.TenantId  and te._sys_is_deleted = false
-union all
-select
-    ${TRANSFORM_ID['TRANSFORM_ID']} as _sys_transform_id,
-     a.tenantId  as "TenantId",
-	cast(0 as decimal(15,2)) as "AccountBudgetAmount",
-	GoodData_Attr(a.AccountId)  as "AccountId",
-	GoodData_Attr(FP.Id) as "FiscalPeriodId",
-	GoodData_Attr(a.AccountId || '#' || FP.ID || '#<No budget>') as "AccountBudgetFactId",
-	GoodData_Attr(a.AccountId || '#' || FP.ID || '#<No budget>') as "AccountBudgetAttrId" 
-	,GoodData_Attr('<No budget>') as "ScenarioId"
-from stg_csv_account_merge a
-join (select min(FiscalPeriodId) as "Id", TenantId from stg_csv_FiscalPeriod_merge group by TenantId) FP
-on a.TenantId=fp.TenantId
+truncate table wrk_out_AccountBudgets_fact;
+insert /*+ direct */ into wrk_out_AccountBudgets_fact 
+                                    (
+                                    TenantId,
+                                    AccountBudgetAmount,
+                                    AccountId,
+                                    FiscalPeriodId,
+                                    AccountBudgetFactId,
+                                    AccountBudgetAttrId,
+                                    ScenarioId,
+                                    _sys_is_deleted,
+                                    _sys_hash
+                                    )
+
+SELECT 
+TenantId,
+AccountBudgetAmount,
+AccountId,
+FiscalPeriodId,
+AccountBudgetFactId,
+AccountBudgetAttrId,
+ScenarioId,
+_sys_is_deleted,
+MD5 (
+        COALESCE(( AccountBudgetAmount )::VARCHAR(1000),'') || '|' ||
+        COALESCE(( AccountId )::VARCHAR(1000),'') || '|' ||
+        COALESCE(( FiscalPeriodId )::VARCHAR(1000),'') || '|' ||
+        COALESCE(( AccountBudgetAttrId )::VARCHAR(1000),'') || '|' ||
+        COALESCE(( ScenarioId )::VARCHAR(1000),'') 
+    ) as _sys_hash
+
+FROM (
+
+        SELECT
+            abd.TenantId,
+            cast(abd.Amount as decimal(19,2)) as "AccountBudgetAmount",
+            ab.AccountId::VARCHAR(512)  as "AccountId",
+            abd.FiscalPeriodId::VARCHAR(512) as "FiscalPeriodId",
+            abd.AccountBudgetDetailId::VARCHAR(512) as "AccountBudgetFactId",
+            abd.AccountBudgetDetailId::VARCHAR(512) as "AccountBudgetAttrId",
+            BS.ScenarioId::VARCHAR(512) as "ScenarioId",
+            FALSE as _sys_is_deleted
+        from stg_csv_accountbudgetdetail_merge abd
+        join stg_csv_accountbudget_merge ab
+            on abd.AccountBudgetId = ab.AccountBudgetId 
+            and abd.TenantId = ab.TenantId
+        join stg_csv_budgetscenario_merge bs
+            on bs.BudgetScenarioId = ab.BudgetScenarioId 
+            and bs.TenantId = abd.TenantId
+        join stg_csv_tableentry_merge te
+            on bs.ScenarioId = te.TableEntryId 
+            and te.CodeTableId = 124 
+            and te.TenantId = abd.TenantId  
+            and te._sys_is_deleted = false
+
+        union all
+
+        SELECT
+
+            a.tenantId,
+            cast(0 as decimal(19,2)) as "AccountBudgetAmount",
+            a.AccountId::VARCHAR(512)  as "AccountId",
+            FP.Id::VARCHAR(512) as "FiscalPeriodId",
+            (a.AccountId || '#' || FP.ID || '#-1')::VARCHAR(512) as "AccountBudgetFactId",
+            (a.AccountId || '#' || FP.ID || '#-1')::VARCHAR(512) as "AccountBudgetAttrId",
+            '-1'::VARCHAR(512) as "ScenarioId",
+            FALSE as _sys_is_deleted
+        from stg_csv_account_merge a
+        join (SELECT 
+             min(FiscalPeriodId) as "Id", 
+             TenantId 
+             from stg_csv_FiscalPeriod_merge 
+             group by TenantId) FP
+            on a.TenantId=fp.TenantId
+
+    ) as AccountBudgetFact
 ;
 
-INSERT INTO _sys_transform_id (id,entity,ts_start,ts_end) VALUES (${TRANSFORM_ID['TRANSFORM_ID']},'dm_AccountBudgets_fact',null,now());
-select analyze_statistics('out_AccountBudgets_fact')
-;
+#{consolidate(param_definition_file="out_accountbudgets_fact.json")}

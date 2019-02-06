@@ -1,0 +1,17 @@
+{
+"tgt_table_name": "out_ARClients",
+"keys":["TenantId","ARClientId"],
+"source_mode":"full",
+"fields":[ 
+			"TenantId",
+			"ARClientId",
+			"ARClientType",
+			"ARClientDisplayName",
+			"ARClientCFDANumber",
+			"AddedByUserId",
+			"dateadded",
+			"datechanged",
+			"Amount",
+			"Name"
+       ]
+}
