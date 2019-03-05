@@ -63,7 +63,7 @@ FROM    (
                 on a.TenantId=fp.TenantId
         union all
         
-        select
+        select distinct
             TenantId::VARCHAR(128) as "TenantId",
             GoodData_Attr('0') as AccountBudgetAttrId,
             '-1'::VARCHAR(512) as "IncorrectScenarioId",
