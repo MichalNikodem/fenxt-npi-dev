@@ -23,8 +23,7 @@ SEGMENTED BY HASH(TenantId,TranDistributionId) ALL NODES KSAFE 1 ;
 INSERT /*+direct*/ INTO tmp_ids
 SELECT distinct
         ids.TenantId,
-        ids.TranDistributionId,
-        row_number() over (partition by ids.TenantId, ids.TranDistributionId) RowNumber
+        ids.TranDistributionId
         from (
                          select TenantId, TranDistributionId from out_transactions where (TenantId,classid) in (select TenantId, TableEntryId from tmp_tableentry where _sys_updated_at > nvl(to_timestamp(nullif('${PREV_TMP_TS['out_transactions_attr#tmp_tableentry']}',''),'yyyy-mm-dd hh24:mi:ss.us'),'2000-01-01') and _sys_updated_at <= to_timestamp('${LAST_TMP_TS['tmp_tableentry']}','yyyy-mm-dd hh24:mi:ss.us'))
                union all select TenantId, TranDistributionId from out_transactions where (TenantId,TransactionCode1Id) in (select TenantId, TableEntryId from tmp_tableentry where _sys_updated_at > nvl(to_timestamp(nullif('${PREV_TMP_TS['out_transactions_attr#tmp_tableentry']}',''),'yyyy-mm-dd hh24:mi:ss.us'),'2000-01-01') and _sys_updated_at <= to_timestamp('${LAST_TMP_TS['tmp_tableentry']}','yyyy-mm-dd hh24:mi:ss.us'))
