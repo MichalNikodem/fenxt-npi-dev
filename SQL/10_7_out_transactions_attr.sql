@@ -9,7 +9,7 @@ values ('out_transactions_attr','tmp_tableentry','tmp_start',now(),nvl(to_timest
 
 DROP TABLE IF EXISTS tmp_ids;
 CREATE LOCAL TEMPORARY TABLE tmp_ids (
-                                    TenantId varchar(255) NOT NULL, 
+                                    TenantId varchar(255) NOT NULL encoding rle, 
                                     TranDistributionId int NOT NULL
                                          )
 
