@@ -88,6 +88,7 @@ insert /*+ direct */ into wrk_out_Accounts
                             accountsegment8,
                             accountsegment9,
                             accountsegment10,
+                            _sys_is_deleted,
                             _sys_hash)
 
 SELECT
@@ -123,6 +124,7 @@ accountsegment7,
 accountsegment8,
 accountsegment9,
 accountsegment10,
+false,
 MD5(
 COALESCE(( AccountNumber )::VARCHAR(1000),'') || '|' ||
 COALESCE(( AccountDescription )::VARCHAR(1000),'') || '|' ||
