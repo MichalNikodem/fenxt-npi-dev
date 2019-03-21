@@ -1,0 +1,18 @@
+{
+  "tgt_table_name": "out_projectbudgets",
+  "mode": "full",
+  "keys": [
+    "TenantId",
+    "ProjectBudgetId"
+  ],
+  "source_mode": "full",
+  "fields": [
+    "TenantId",
+    "PeriodAmount",
+    "ProjectBudgetId",
+    "ProjectId",
+    "AccountId",
+    "FiscalPeriodId",
+    "ScenarioId"
+  ]
+}

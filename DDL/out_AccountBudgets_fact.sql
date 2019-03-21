@@ -9,7 +9,6 @@ CREATE TABLE out_AccountBudgets_fact
     AccountId varchar(512),
     FiscalPeriodId varchar(512),
     AccountBudgetFactId varchar(512),
-    AccountBudgetAttrId varchar(512),
     ScenarioId varchar(512),
     _sys_hash varchar(32),
     _sys_is_deleted boolean encoding rle,

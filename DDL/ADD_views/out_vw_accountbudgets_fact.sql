@@ -5,6 +5,7 @@ SELECT
     AccountBudgetAttrId::VARCHAR(512) as r__accountbudgets_attr,
     AccountId::VARCHAR(512) as r__accounts,
     FiscalPeriodId::VARCHAR(512) as r__fiscalperiods,
+    ScenarioId::VARCHAR(512) AS r__budgetscenario,
     TenantId::VARCHAR(128) as x__client_id
 FROM out_AccountBudgets_fact
 ;

@@ -8,7 +8,6 @@
 		"AccountId",
 		"FiscalPeriodId",
 		"AccountBudgetFactId",
-		"AccountBudgetAttrId",
 		"ScenarioId"
        ]
 }
