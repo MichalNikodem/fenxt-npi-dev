@@ -14,12 +14,15 @@ CREATE TABLE out_ProjectBudgets
     _sys_is_deleted BOOLEAN encoding rle,
     _sys_hash varchar(32),
     _sys_updated_at timestamp
-) ORDER BY ProjectBudgetId,
+) ORDER BY AccountId,
+           FiscalPeriodId,
+           ProjectBudgetId,
+           ScenarioId,
            TenantId,
            _sys_hash,
            _sys_is_deleted
 
-SEGMENTED BY hash(TenantId,ProjectBudgetId) ALL NODES;
+SEGMENTED BY hash(TenantId,AccountId,FiscalPeriodId,ProjectBudgetId,ScenarioId) ALL NODES;
 
 CREATE TABLE wrk_out_ProjectBudgets LIKE out_ProjectBudgets INCLUDING PROJECTIONS;
 CREATE TABLE wrk_out_ProjectBudgets_diff LIKE out_ProjectBudgets INCLUDING PROJECTIONS;

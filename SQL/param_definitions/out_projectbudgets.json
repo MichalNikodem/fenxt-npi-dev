@@ -2,8 +2,11 @@
   "tgt_table_name": "out_projectbudgets",
   "mode": "full",
   "keys": [
-    "TenantId",
-    "ProjectBudgetId"
+    "AccountId",
+    "FiscalPeriodId",
+    "ProjectBudgetId",
+    "ScenarioId",
+    "TenantId"
   ],
   "source_mode": "full",
   "fields": [

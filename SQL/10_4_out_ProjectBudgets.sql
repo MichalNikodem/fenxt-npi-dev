@@ -24,10 +24,7 @@ ScenarioId,
 FALSE _sys_is_deleted,
 MD5 (
         COALESCE(( PeriodAmount )::VARCHAR(1000),'') || '|' ||
-        COALESCE(( ProjectId )::VARCHAR(1000),'') || '|' ||
-        COALESCE(( AccountId )::VARCHAR(1000),'') || '|' ||
-        COALESCE(( FiscalPeriodId )::VARCHAR(1000),'') || '|' ||
-        COALESCE(( ScenarioId )::VARCHAR(1000),'')
+        COALESCE(( ProjectId )::VARCHAR(1000),'')
  	) as _sys_hash
 
 FROM (
@@ -35,7 +32,8 @@ FROM (
 
 		    pb.TenantId as "TenantId"
 			,cast(pbd.Amount as decimal(19,2)) as "PeriodAmount"
-			,GoodData_Attr(coalesce(pb.ProjectBudgetId,'0')||'-'||pb.AccountId||'-'||pbd.FiscalPeriodId||'-'||pb.ScenarioId) as "ProjectBudgetId"
+			--,GoodData_Attr(coalesce(pb.ProjectBudgetId,'0')||'-'||pb.AccountId||'-'||pbd.FiscalPeriodId||'-'||pb.ScenarioId) as "ProjectBudgetId"
+			,GoodData_Attr(pb.ProjectBudgetId) as "ProjectBudgetId"
 			,GoodData_Attr(pb.ProjectId)  as "ProjectId"
 			,GoodData_Attr(pb.AccountId)  as "AccountId"
 			,GoodData_Attr(pbd.FiscalPeriodId)  as "FiscalPeriodId"
@@ -71,10 +69,7 @@ ScenarioId,
 FALSE as _sys_is_deleted,
 MD5 (
         COALESCE(( PeriodAmount )::VARCHAR(1000),'') || '|' ||
-        COALESCE(( ProjectId )::VARCHAR(1000),'') || '|' ||
-        COALESCE(( AccountId )::VARCHAR(1000),'') || '|' ||
-        COALESCE(( FiscalPeriodId )::VARCHAR(1000),'') || '|' ||
-        COALESCE(( ScenarioId )::VARCHAR(1000),'')
+        COALESCE(( ProjectId )::VARCHAR(1000),'')
  	) as _sys_hash
 
 FROM (
@@ -83,7 +78,8 @@ FROM (
 
 		    p.TenantId as "TenantId",
 			cast(0 as decimal(19,2)) as "PeriodAmount",
-			GoodData_Attr(coalesce(p.ProjectId,'0')||'-'||'#'||'-'|| FP.Id ||'#-1'||'-'||'-1') as "ProjectBudgetId",
+			--GoodData_Attr(coalesce(p.ProjectId,'0')||'-'||'#'||'-'|| FP.Id ||'#-1'||'-'||'-1') as "ProjectBudgetId",
+			GoodData_Attr(p.ProjectId)  as "ProjectBudgetId",
 			GoodData_Attr(p.ProjectId)  as "ProjectId",
 			GoodData_Attr(null)  as "AccountId",
 			GoodData_Attr(FP.Id)  as "FiscalPeriodId",
