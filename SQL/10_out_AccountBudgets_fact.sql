@@ -6,7 +6,6 @@ insert /*+ direct */ into wrk_out_AccountBudgets_fact
                                     AccountId,
                                     FiscalPeriodId,
                                     AccountBudgetFactId,
-                                    AccountBudgetAttrId,
                                     ScenarioId,
                                     _sys_is_deleted,
                                     _sys_hash
@@ -18,14 +17,12 @@ AccountBudgetAmount,
 AccountId,
 FiscalPeriodId,
 AccountBudgetFactId,
-AccountBudgetAttrId,
 ScenarioId,
 _sys_is_deleted,
 MD5 (
         COALESCE(( AccountBudgetAmount )::VARCHAR(1000),'') || '|' ||
         COALESCE(( AccountId )::VARCHAR(1000),'') || '|' ||
         COALESCE(( FiscalPeriodId )::VARCHAR(1000),'') || '|' ||
-        COALESCE(( AccountBudgetAttrId )::VARCHAR(1000),'') || '|' ||
         COALESCE(( ScenarioId )::VARCHAR(1000),'') 
     ) as _sys_hash
 
@@ -37,7 +34,6 @@ FROM (
             ab.AccountId::VARCHAR(512)  as "AccountId",
             abd.FiscalPeriodId::VARCHAR(512) as "FiscalPeriodId",
             abd.AccountBudgetDetailId::VARCHAR(512) as "AccountBudgetFactId",
-            abd.AccountBudgetDetailId::VARCHAR(512) as "AccountBudgetAttrId",
             BS.ScenarioId::VARCHAR(512) as "ScenarioId",
             FALSE as _sys_is_deleted
         from stg_csv_accountbudgetdetail_merge abd
@@ -62,7 +58,6 @@ FROM (
             a.AccountId::VARCHAR(512)  as "AccountId",
             FP.Id::VARCHAR(512) as "FiscalPeriodId",
             (a.AccountId || '#' || FP.ID || '#-1')::VARCHAR(512) as "AccountBudgetFactId",
-            (a.AccountId || '#' || FP.ID || '#-1')::VARCHAR(512) as "AccountBudgetAttrId",
             '-1'::VARCHAR(512) as "ScenarioId",
             FALSE as _sys_is_deleted
         from stg_csv_account_merge a
