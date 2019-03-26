@@ -1,17 +1,28 @@
-drop table if exists out_ProjectBudgets;
+drop table if exists out_ProjectBudgets CASCADE;
+drop table if exists wrk_out_ProjectBudgets CASCADE;
+drop table if exists wrk_out_ProjectBudgets_diff CASCADE;
+
 CREATE TABLE out_ProjectBudgets
 (
-    _sys_transform_id int NOT NULL encoding rle,
     TenantId varchar(255) encoding rle,
     PeriodAmount varchar(255),
     ProjectBudgetId varchar(255),
-    AccountBudgetAttrId varchar(255),
     ProjectId varchar(255),
     AccountId varchar(255),
-    ProjectBudgetAmount varchar(255),
     FiscalPeriodId varchar(255),
-    ScenarioId varchar(255)
-) ORDER BY TenantId,
-          _sys_transform_id
-SEGMENTED BY hash(TenantId) ALL NODES
-PARTITION BY (_sys_transform_id);
+    ScenarioId varchar(255),
+    _sys_is_deleted BOOLEAN encoding rle,
+    _sys_hash varchar(32),
+    _sys_updated_at timestamp
+) ORDER BY AccountId,
+           FiscalPeriodId,
+           ProjectBudgetId,
+           ScenarioId,
+           TenantId,
+           _sys_hash,
+           _sys_is_deleted
+
+SEGMENTED BY hash(TenantId,AccountId,FiscalPeriodId,ProjectBudgetId,ScenarioId) ALL NODES;
+
+CREATE TABLE wrk_out_ProjectBudgets LIKE out_ProjectBudgets INCLUDING PROJECTIONS;
+CREATE TABLE wrk_out_ProjectBudgets_diff LIKE out_ProjectBudgets INCLUDING PROJECTIONS;
