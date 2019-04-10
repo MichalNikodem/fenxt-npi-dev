@@ -8,6 +8,7 @@ select
     InvoiceId::VARCHAR(512) as cp__invoiceattrid,
     AddedByUserNameLabel::VARCHAR(512) as l__addedbyusername__addedbyuserlabel,
     Description::VARCHAR(512) as l__description__invoicesdescriptionlabel,
+    InvoiceHyperlink::VARCHAR(512) as l__invoiceattrid__invoiceidhyperlink,
     InvoiceHyperlink::VARCHAR(512) as l__invoicenumber__invoicenumberhyperlink,
     TenantId::VARCHAR(128) as x__client_id
 from out_Invoices_attr
