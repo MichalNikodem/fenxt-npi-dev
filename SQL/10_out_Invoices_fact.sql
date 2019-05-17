@@ -17,6 +17,7 @@ insert /*+ direct */ into out_Invoices_fact
 	,Gooddata_date(i.PostDate) as "PostDate"
 	,GoodData_Attr('inv-'||i.InvoiceId) as "PostStatusId"
 	,GoodData_date(i.Date) as "Date"
+	,Gooddata_date(i.DiscountExpirationDate) as "DiscountExpirationDate"
 from stg_csv_Invoice_merge i
 left join stg_csv_FiscalPeriod_merge fp on i.PostDate >= fp.StartDate and i.POSTDATE <= fp.EndDate and i.TenantId = fp.TenantId
 
