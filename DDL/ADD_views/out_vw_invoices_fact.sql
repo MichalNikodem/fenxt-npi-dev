@@ -6,7 +6,6 @@ SELECT
 	DateChanged::DATE as "d__datechanged",
 	DueDate::DATE as "d__duedate",
 	PostDate::DATE as "d__postdate",
-	DiscountExpirationDate::DATE as "d__discountexpirationdate",
 	InvoiceAmount::NUMERIC(15,2) as "f__invoiceamount",
 	InvoiceBalance::NUMERIC(15,2) as "f__invoicebalance",
 	InvoiceDiscountAmount::NUMERIC(15,2) as "f__invoicediscountamount",

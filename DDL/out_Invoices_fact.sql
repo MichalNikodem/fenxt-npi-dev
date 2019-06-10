@@ -16,8 +16,7 @@ CREATE TABLE out_Invoices_fact
     DueDate varchar(255),
     PostDate varchar(255),
     PostStatusId varchar(255),
-    Date varchar(255),
-	DiscountExpirationDate varchar(255)
+    Date varchar(255)
 )  ORDER BY TenantId,
           _sys_transform_id
 SEGMENTED BY hash(TenantId) ALL NODES

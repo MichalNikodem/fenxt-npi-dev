@@ -59,10 +59,7 @@ select
 			,pbd.Amount 
 		from tmp_ProjectBudgets pb
 		join tmp_ProjectBudgetDetail pbd
-		--join stg_csv_ProjectBudgetDetail_merge pbd
 		  on pb.ProjectBudgetId = pbd.ProjectBudgetId
-		 and pb.TenantId = pbd.TenantId 
-        --where pbd._sys_is_deleted = FALSE
-         ;
+		 and pb.TenantId = pbd.TenantId ;
 
 SELECT ANALYZE_STATISTICS('tmp_ProjectBudgets_Fiscal');
